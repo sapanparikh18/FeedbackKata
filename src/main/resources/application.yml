@@ -1,0 +1,14 @@
+micronaut:
+  application:
+    name: scromania
+  metrics:
+    enabled: true
+    export:
+      azuremonitor:
+        enabled: true
+        instrumentationKey: ${AZUREMONITOR_INSTRUMENTATION_KEY}
+        step: PT1M
+netty:
+  default:
+    allocator:
+      max-order: 3
