@@ -6,7 +6,7 @@ micronaut:
     export:
       azuremonitor:
         enabled: true
-        instrumentationKey: ${AZUREMONITOR_INSTRUMENTATION_KEY}
+        instrumentationKey: InstrumentationKey=d1e5b49b-05ed-4e9e-8e34-1cb79f08da3d;IngestionEndpoint=https://centralindia-0.in.applicationinsights.azure.com/;LiveEndpoint=https://centralindia.livediagnostics.monitor.azure.com/
         step: PT1M
 netty:
   default:
