@@ -59,3 +59,9 @@ micronaut {
     }
 }
 
+sonarqube{
+    properties  {
+        property "sonar.projectName", "sapanparikh18_FeedbackKata"
+        property "sonar.organization", "sapanparikh18"
+    }
+}
