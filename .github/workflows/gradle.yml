@@ -58,6 +58,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
+          SONAR_ORGANIZATION: sapanparikh18
 
       # Check the Quality Gate status.
       - name: SonarQube Quality Gate check
