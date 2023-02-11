@@ -1,3 +1,9 @@
+name: Load Test
+on:
+  workflow_run:
+    workflows: [ "Java CI/CD" ]
+    types:
+      - completed
 k6_load_test:
   name: k6 Load Test
   runs-on: ubuntu-latest
