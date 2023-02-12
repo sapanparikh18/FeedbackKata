@@ -11,6 +11,6 @@ export const options = {
 };
 
 export default function () {
-    const res = http.get('http://scromania.westeurope.azurecontainer.io:8080/scromania');
+    http.get('http://scromania.westeurope.azurecontainer.io:8080/scromania');
     sleep(1);
 }
