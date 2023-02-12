@@ -8,6 +8,12 @@ export const options = {
         http_req_failed: ['rate<0.01'], // http errors should be less than 1%
         http_req_duration: ['p(95)<500'], // 95 percent of response times must be below 500ms
     },
+    ext: {
+        loadimpact: {
+            projectID: 3626539,
+            name: "Bucharest Crafters' load test"
+        }
+    }
 };
 
 export default function () {
