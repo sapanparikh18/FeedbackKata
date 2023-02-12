@@ -11,6 +11,7 @@ export const options = {
 };
 
 export default function () {
+    //NOSONAR
     http.get('http://scromania.westeurope.azurecontainer.io:8080/scromania');
     sleep(1);
 }
