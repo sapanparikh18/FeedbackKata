@@ -8,7 +8,6 @@ jobs:
   on-success:
     name: k6 Load Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v1
