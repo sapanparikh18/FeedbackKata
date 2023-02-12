@@ -39,7 +39,7 @@ jobs:
           SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
           SONAR_ORGANIZATION: sapanparikh18
         run: |
-          ./gradlew check build sonar --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18
+          ./gradlew check build sonar --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18 -DAZUREMONITOR_INSTRUMENTATION_KEY=${secret.AZUREMONITOR_INSTRUMENTATION_KEY}
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
