@@ -24,90 +24,86 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-#      - name: Cache SonarQube packages
-#        uses: actions/cache@v1
-#        with:
-#          path: ~/.sonar/cache
-#          key: ${{ runner.os }}-sonar
-#          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
       - name: Build And Scan
-#        env:
-##        Sonar
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-#          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
-#          SONAR_ORGANIZATION: sapanparikh18
-#          AZUREMONITOR_INSTRUMENTATION_KEY: ${{secrets.AZUREMONITOR_INSTRUMENTATION_KEY}}
+        env:
+#        Sonar
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
+          SONAR_ORGANIZATION: sapanparikh18
+          AZUREMONITOR_INSTRUMENTATION_KEY: ${secrets.AZUREMONITOR_INSTRUMENTATION_KEY}
         run: |
-          ./gradlew build --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18
-#      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
-#      - name: SonarQube Scan
-#        uses: sonarsource/sonarqube-scan-action@master
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-#          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
-#          SONAR_ORGANIZATION: sapanparikh18
-#
-#      # Check the Quality Gate status.
-#      - name: SonarQube Quality Gate check
-#        id: sonarqube-quality-gate-check
-#        uses: sonarsource/sonarqube-quality-gate-action@master
-#        # Force to fail step after specific time.
-#        timeout-minutes: 5
-#        env:
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#      # Optionally you can use the output from the Quality Gate in another step.
-#      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
-#      - name: "SonarQube Quality Gate Status value"
-#        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+          ./gradlew check build sonar --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18
+      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
+          SONAR_ORGANIZATION: sapanparikh18
 
-
-#--------------------------------------------------------------------------------------------------
-#      - name: Docker login
-#        uses: docker/login-action@v1
-#        with:
-#          registry: ${{ secrets.DOCKER_REGISTRY_URL }}
-#          username: ${{ secrets.DOCKER_USERNAME }}
-#          password: ${{ secrets.DOCKER_PASSWORD }}
-#      - name: Docker Push
-#        env:
-#          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
-#          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-#          TESTCONTAINERS_RYUK_DISABLED: true
-#        run: |
-#          export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/scromania" | sed -e 's#//#/#' -e 's#^/##'`
-#          ./gradlew dockerPush --no-daemon --info
-#      - name: 'Login via Azure CLI'
-#        uses: azure/login@v1
-#        with:
-#          creds: ${{ secrets.AZURE_CREDENTIALS }}
-#      - name: Build And Push Docker Image
-#        env:
-#          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-#          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
-#          TESTCONTAINERS_RYUK_DISABLED: true
-#        run: |
-#          export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/scromania" | sed -e 's#//#/#' -e 's#^/##'`
-#          ./gradlew check dockerPush --no-daemon
-#--------------------------------------------------------------------------------------------------
-#      - name: Deploy to Azure Container Instances
-#        env:
-#          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
-#          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#        run: |
-#          DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep scromania)
-#          DOCKER_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_IMAGE_REPOSITORY}" )
-#
-#          az container create --resource-group "${AZURE_RESOURCE_GROUP}" \
-#            --name scromania \
-#            --registry-login-server "${DOCKER_REGISTRY_URL}" \
-#            --registry-username "${DOCKER_USERNAME}" \
-#            --registry-password "${DOCKER_PASSWORD}" \
-#            --image "${DOCKER_IMAGE}" \
-#            --dns-name-label "${AZURE_DNS_LABEL}" \
-#            --ports 8080 \
-#            --location "${AZURE_LOCATION}"
+      # Check the Quality Gate status.
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Optionally you can use the output from the Quality Gate in another step.
+      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+      - name: "SonarQube Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+      - name: Docker login
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY_URL }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker Push
+        env:
+          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
+          TESTCONTAINERS_RYUK_DISABLED: true
+        run: |
+          export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/scromania" | sed -e 's#//#/#' -e 's#^/##'`
+          ./gradlew dockerPush --no-daemon --info
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Build And Push Docker Image
+        env:
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
+          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
+          TESTCONTAINERS_RYUK_DISABLED: true
+        run: |
+          export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/scromania" | sed -e 's#//#/#' -e 's#^/##'`
+          ./gradlew check dockerPush --no-daemon
+      - name: Deploy to Azure Container Instances
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep scromania)
+          DOCKER_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_IMAGE_REPOSITORY}" )
+          
+          az container create --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --name scromania \
+            --registry-login-server "${DOCKER_REGISTRY_URL}" \
+            --registry-username "${DOCKER_USERNAME}" \
+            --registry-password "${DOCKER_PASSWORD}" \
+            --image "${DOCKER_IMAGE}" \
+            --dns-name-label "${AZURE_DNS_LABEL}" \
+            --ports 8080 \
+            --location "${AZURE_LOCATION}"
