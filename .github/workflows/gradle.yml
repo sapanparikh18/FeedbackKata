@@ -25,3 +25,10 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: true
         run: |
           ./gradlew build --no-daemon
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/test-results/**/*.xml
+            **/test-results/**/*.trx
