@@ -15,7 +15,7 @@ class ScromaniaTest {
 
     @Test
     void testItWorks() {
-        Assertions.assertFalse(application.isRunning());
+        Assertions.assertTrue(application.isRunning());
     }
 
 }
