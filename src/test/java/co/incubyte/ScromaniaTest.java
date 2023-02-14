@@ -18,4 +18,5 @@ class ScromaniaTest {
         Assertions.assertTrue(application.isRunning());
     }
 
+
 }
