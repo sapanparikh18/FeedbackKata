@@ -106,5 +106,5 @@ jobs:
             --image "${DOCKER_IMAGE}" \
             --dns-name-label "${AZURE_DNS_LABEL}" \
             --ports 8080 \
-            --location "${AZURE_LOCATION}"
+            --location "${AZURE_LOCATION}" \
             --environment-variables 'APPINSIGHTS_INSTRUMENTATIONKEY'='96a6b51d-4026-406c-b492-b6ec81b3df91' 'APPLICATIONINSIGHTS_CONNECTION_STRING'='InstrumentationKey=96a6b51d-4026-406c-b492-b6ec81b3df91;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
