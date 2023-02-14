@@ -19,6 +19,6 @@ public class ScromaniaController {
   @Get(uri = "/", produces = "text/plain")
   public String index() {
     log.info("requesting a resource");
-    return "Example Response 0.1 at" + serverEventListener.getStartedAt();
+    return "Example Response 0.2 at " + serverEventListener.getStartedAt();
   }
 }

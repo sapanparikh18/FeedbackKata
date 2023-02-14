@@ -38,7 +38,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
           SONAR_ORGANIZATION: sapanparikh18
-          AZUREMONITOR_INSTRUMENTATION_KEY: ${secrets.AZUREMONITOR_INSTRUMENTATION_KEY}
+          AZUREMONITOR_INSTRUMENTATION_KEY: 96a6b51d-4026-406c-b492-b6ec81b3df91
         run: |
           ./gradlew check --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.

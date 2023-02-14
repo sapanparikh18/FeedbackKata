@@ -6,7 +6,7 @@ micronaut:
     export:
       azuremonitor:
         enabled: true
-        instrumentationKey: d1e5b49b-05ed-4e9e-8e34-1cb79f08da3d
+        instrumentationKey: 96a6b51d-4026-406c-b492-b6ec81b3df91
         step: PT1M
 netty:
   default:
