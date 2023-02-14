@@ -35,6 +35,9 @@ java {
 }
 
 tasks {
+    dockerfile{
+        entryPoint("java", "-javaagent:path/to/applicationinsights-agent-3.4.9.jar", "-jar", "/home/app/application.jar")
+    }
     dockerBuild {
         images = ["${System.env.DOCKER_IMAGE ?: project.name}:$project.version"]
     }
