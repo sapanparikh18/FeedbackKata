@@ -22,7 +22,7 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
-
+    implementation 'com.microsoft.azure:applicationinsights-runtime-attach:3.4.9'
 }
 
 
