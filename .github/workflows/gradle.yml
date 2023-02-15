@@ -19,6 +19,7 @@ jobs:
         with:
           java-version: 11
       - name: Build And Scan
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           #        Sonar
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -26,18 +27,9 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
           SONAR_ORGANIZATION: sapanparikh18
-          AZUREMONITOR_INSTRUMENTATION_KEY: 96a6b51d-4026-406c-b492-b6ec81b3df91
         run: |
           ./gradlew build sonar --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18 -Dsonar.java.binaries=build/classes
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
-          SONAR_ORGANIZATION: sapanparikh18
-
       # Check the Quality Gate status.
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
