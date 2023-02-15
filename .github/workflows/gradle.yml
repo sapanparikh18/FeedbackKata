@@ -87,7 +87,7 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: true
         run: |
           export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/scromania" | sed -e 's#//#/#' -e 's#^/##'`
-          ./gradlew check dockerPush --no-daemon
+          ./gradlew build dockerPush --no-daemon
       - name: Deploy to Azure Container Instances
         env:
           AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
