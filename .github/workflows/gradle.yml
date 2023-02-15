@@ -2,7 +2,6 @@ name: Java CI
 on: [ push, pull_request ]
 jobs:
   build:
-    name: Build & Analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,13 +18,38 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Build
+      - name: Build And Scan
         env:
-          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
-          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-          TESTCONTAINERS_RYUK_DISABLED: true
+          #        Sonar
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
+          SONAR_ORGANIZATION: sapanparikh18
+          AZUREMONITOR_INSTRUMENTATION_KEY: 96a6b51d-4026-406c-b492-b6ec81b3df91
         run: |
-          ./gradlew build --no-daemon
+          ./gradlew build sonar --no-daemon --info -Dsonar.projectKey=sapanparikh18_FeedbackKata -Dsonar.organization=sapanparikh18
+      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_PROJECT_KEY: sapanparikh18_FeedbackKata
+          SONAR_ORGANIZATION: sapanparikh18
+
+      # Check the Quality Gate status.
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Optionally you can use the output from the Quality Gate in another step.
+      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+      - name: "SonarQube Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
