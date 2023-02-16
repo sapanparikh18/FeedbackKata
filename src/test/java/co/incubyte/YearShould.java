@@ -9,7 +9,7 @@ public class YearShould {
     @DisplayName("should return leap if year is divisible by 400")
     public void should_return_leap_if_year_is_divisible_by_400() {
         YearController yearController = new YearController();
-        Year year = yearController.isLeap(4000);
+        Year year = yearController.isLeap(8000);
         Assertions.assertThat(year.isLeap()).isTrue();
     }
 
