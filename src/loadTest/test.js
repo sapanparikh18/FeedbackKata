@@ -17,6 +17,6 @@ export const options = {
 };
 
 export default function () {
-    http.get('http://scromania.westeurope.azurecontainer.io:8080/year/1996');
+    http.get('http://scromania.westeurope.azurecontainer.io:8080/year/1997');
     sleep(0.5);
 }
