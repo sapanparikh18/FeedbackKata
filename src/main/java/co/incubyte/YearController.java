@@ -7,10 +7,6 @@ import io.micronaut.http.annotation.Get;
 public class YearController {
     @Get("/{year}")
     public Year isLeap(int year) {
-        String str = null;
-        if(str == null && str == "leap"){
-            //then do nothing
-        }
         Year responseYear = new Year(year);
         boolean isLeap = isDivisibleBy(year, 100) ? isDivisibleBy(year, 400) : isDivisibleBy(year, 4);
         responseYear.setLeap(isLeap);
