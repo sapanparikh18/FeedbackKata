@@ -1,5 +1,10 @@
 name: Java CI
 on: [ push, pull_request ]
+
+env:
+  AZURE_LOCATION: westeurope
+  AZURE_DNS_LABEL: scromania
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -56,3 +61,42 @@ jobs:
         with:
           files: |
             **/test-results/**/*.xml
+#----------------
+      - name: Docker login
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY_URL }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker Push
+        env:
+          DOCKER_REPOSITORY_PATH: ${{ secrets.DOCKER_REPOSITORY_PATH }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
+          TESTCONTAINERS_RYUK_DISABLED: true
+        run: |
+          export DOCKER_IMAGE=`echo "${DOCKER_REGISTRY_URL}/${DOCKER_REPOSITORY_PATH}/scromania" | sed -e 's#//#/#' -e 's#^/##'`
+          ./gradlew dockerPush --no-daemon --info
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy to Azure Container Instances
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          DOCKER_IMAGE_REPOSITORY=$(docker images --format "{{.Repository}}" | grep scromania)
+          DOCKER_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" "${DOCKER_IMAGE_REPOSITORY}" )
+          
+          az container create --resource-group "${AZURE_RESOURCE_GROUP}" \
+            --name scromania \
+            --registry-login-server "${DOCKER_REGISTRY_URL}" \
+            --registry-username "${DOCKER_USERNAME}" \
+            --registry-password "${DOCKER_PASSWORD}" \
+            --image "${DOCKER_IMAGE}" \
+            --dns-name-label "${AZURE_DNS_LABEL}" \
+            --ports 8080 \
+            --location "${AZURE_LOCATION}" \
+            --environment-variables 'APPINSIGHTS_INSTRUMENTATIONKEY'='96a6b51d-4026-406c-b492-b6ec81b3df91' 'APPLICATIONINSIGHTS_CONNECTION_STRING'='InstrumentationKey=96a6b51d-4026-406c-b492-b6ec81b3df91;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
