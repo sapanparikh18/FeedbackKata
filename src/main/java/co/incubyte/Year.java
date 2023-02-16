@@ -16,7 +16,7 @@ public class Year {
         return leap;
     }
 
-    public int getInputYear() {
+    public int getYear() {
         return year;
     }
 }
